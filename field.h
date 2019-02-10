@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QTime>
+#include <QTimer>
 
 class field : public QWidget
 {
