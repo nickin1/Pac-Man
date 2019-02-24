@@ -6,15 +6,40 @@
 #include <QTime>
 #include <QTimer>
 
-class field : public QWidget
+class Field : public QWidget
 {
     Q_OBJECT
 public:
-    explicit field(QWidget *parent = nullptr);
+    explicit Field(QWidget *parent = nullptr);
+    void paintEvent(QPaintEvent * Event) override;
 
 signals:
 
+
 public slots:
+
+    void move(int key);
+
+private:
+    QColor wall_color;
+    QColor coin_color;
+    QColor cherry_color;
+    QColor blank_color;
+    QColor player_color;
+    QColor ghost_color;
+
+    char fieldAscii[3][6] = {{'.', '#', '.', 'o', '.', '.'},
+                             {'.', '.', '.', '#', '.', '#'},
+                             {'#', '.', '#', 'o', '.', '.'}};
+
+
+    const int fieldHeight = 3;
+    const int fieldWidth = 6;
+
+    int pm_x = 0;
+    int pm_y = 1;
+
+
 };
 
 #endif // FIELD_H
