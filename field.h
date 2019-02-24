@@ -13,12 +13,16 @@ public:
     explicit Field(QWidget *parent = nullptr);
     void paintEvent(QPaintEvent * Event) override;
 
+
+    int coinCount = 0;
+
 signals:
 
 
 public slots:
 
-    void move(int key);
+    bool moved(int key);
+    void ifCoin();
 
 private:
     QColor wall_color;
@@ -38,6 +42,7 @@ private:
 
     int pm_x = 0;
     int pm_y = 1;
+
 
 
 };

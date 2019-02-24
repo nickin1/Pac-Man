@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerTick()));
-    timer->start(100); //time specified in ms
+    timer->start(150); //time specified in ms
 
 
     field = new Field;
@@ -27,15 +27,23 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::timerTick() {
-    time+=0.1;
+    time+=0.150;
     ui->time->setNum(time);
-    this->field->move(key);
+    this->field->moved(currentKey);
     update();
+    this->field->ifCoin();
+    ui->label->setNum(this->field->coinCount);
 
 }
 
 void MainWindow::keyPressEvent(QKeyEvent * event) {
-    key = event->key();
+    nextKey = event->key();
+    if(this->field->moved(nextKey)){
+        currentKey = nextKey;
+    }
+    else {
+        this->field->moved(currentKey);
+    }
 
 }
 

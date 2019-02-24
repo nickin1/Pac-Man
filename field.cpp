@@ -48,12 +48,20 @@ void Field::paintEvent(QPaintEvent * Event) {
 }
 
 
-void Field::move(int key) {
+void Field::ifCoin() {
+    if (fieldAscii[pm_y][pm_x] == 'o') {
+        fieldAscii[pm_y][pm_x] = '.';
+        coinCount++;
+    }
+}
+
+bool Field::moved(int key) {
     switch (key)
       {
      case Qt::Key_Up:
         if (pm_y != 0 && fieldAscii[pm_y-1][pm_x] != '#') {
             pm_y = pm_y - 1;
+            return true;
         }
 
        break;
@@ -61,19 +69,41 @@ void Field::move(int key) {
      case  Qt::Key_Down:
         if (pm_y != fieldHeight - 1 && fieldAscii[pm_y+1][pm_x] != '#') {
             pm_y = pm_y + 1;
+            return true;
         }
        break;
 
      case  Qt::Key_Left:
         if (pm_x != 0 && fieldAscii[pm_y][pm_x - 1] != '#') {
             pm_x = pm_x - 1;
+            return true;
         }
        break;
 
      case Qt::Key_Right:
         if (pm_x != fieldWidth - 1 && fieldAscii[pm_y][pm_x + 1] != '#') {
             pm_x = pm_x + 1;
+            return true;
         }
        break;
        }
+
+    return false;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

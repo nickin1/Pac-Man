@@ -31,7 +31,8 @@ private:
     double time = 0;
 
     QString fieldOutput;
-    int key;
+    int currentKey;
+    int nextKey;
 
     Field * field;
 };
