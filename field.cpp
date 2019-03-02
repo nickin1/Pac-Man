@@ -47,7 +47,7 @@ void Field::paintEvent(QPaintEvent * Event) {
 
 }
 
-
+//if there is a coin, pick it up and add to coin counter.
 void Field::ifCoin() {
     if (fieldAscii[pm_y][pm_x] == 'o') {
         fieldAscii[pm_y][pm_x] = '.';
@@ -55,13 +55,13 @@ void Field::ifCoin() {
     }
 }
 
-bool Field::moved(int key) {
+//returns true if it is possible to move in that direction, starts moving if possible; otherwise false.
+void Field::move(int key) {
     switch (key)
       {
      case Qt::Key_Up:
         if (pm_y != 0 && fieldAscii[pm_y-1][pm_x] != '#') {
             pm_y = pm_y - 1;
-            return true;
         }
 
        break;
@@ -69,20 +69,48 @@ bool Field::moved(int key) {
      case  Qt::Key_Down:
         if (pm_y != fieldHeight - 1 && fieldAscii[pm_y+1][pm_x] != '#') {
             pm_y = pm_y + 1;
-            return true;
         }
        break;
 
      case  Qt::Key_Left:
         if (pm_x != 0 && fieldAscii[pm_y][pm_x - 1] != '#') {
             pm_x = pm_x - 1;
-            return true;
         }
        break;
 
      case Qt::Key_Right:
         if (pm_x != fieldWidth - 1 && fieldAscii[pm_y][pm_x + 1] != '#') {
             pm_x = pm_x + 1;
+        }
+       break;
+       }
+}
+
+
+bool Field::canMove(int key) {
+    switch (key)
+      {
+     case Qt::Key_Up:
+        if (pm_y != 0 && fieldAscii[pm_y-1][pm_x] != '#') {
+            return true;
+        }
+
+       break;
+
+     case  Qt::Key_Down:
+        if (pm_y != fieldHeight - 1 && fieldAscii[pm_y+1][pm_x] != '#') {
+            return true;
+        }
+       break;
+
+     case  Qt::Key_Left:
+        if (pm_x != 0 && fieldAscii[pm_y][pm_x - 1] != '#') {
+            return true;
+        }
+       break;
+
+     case Qt::Key_Right:
+        if (pm_x != fieldWidth - 1 && fieldAscii[pm_y][pm_x + 1] != '#') {
             return true;
         }
        break;

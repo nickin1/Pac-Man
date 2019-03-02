@@ -21,7 +21,8 @@ signals:
 
 public slots:
 
-    bool moved(int key);
+    void move(int key);
+    bool canMove(int key);
     void ifCoin();
 
 private:

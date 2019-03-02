@@ -27,24 +27,21 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::timerTick() {
-    time+=0.150;
+    time+=0.100;
     ui->time->setNum(time);
-    this->field->moved(currentKey);
     update();
     this->field->ifCoin();
     ui->label->setNum(this->field->coinCount);
+
+    if(this->field->canMove(nextKey)) {
+        currentKey = nextKey;
+    }
+    this->field->move(currentKey);
 
 }
 
 void MainWindow::keyPressEvent(QKeyEvent * event) {
     nextKey = event->key();
-    if(this->field->moved(nextKey)){
-        currentKey = nextKey;
-    }
-    else {
-        this->field->moved(currentKey);
-    }
-
 }
 
 
