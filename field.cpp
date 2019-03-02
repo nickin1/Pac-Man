@@ -17,31 +17,33 @@ Field::Field(QWidget *parent) : QWidget(parent)
 void Field::paintEvent(QPaintEvent * Event) {
 
     QPainter painter(this);
-    painter.fillRect(0, 0, 900, 450, wall_color);
+    painter.fillRect(0, 0, 630, 630, wall_color);
 
     for (int i = 0; i < fieldWidth; ++i) {
         for (int j = 0; j < fieldHeight; ++j) {
             switch(fieldAscii[j][i]) {
                 case '#':
 
-                    painter.fillRect(i*150, j*150, 150, 150, wall_color);
+                    painter.fillRect(i*42, j*42, 42, 42, wall_color);
                 break;
 
                 case 'o':
 
-                    painter.fillRect(i*150, j*150, 150, 150, coin_color);
+                    painter.fillRect(i*42, j*42, 42, 42, blank_color);
+                    painter.setBrush(coin_color);
+                    painter.drawEllipse(i*42 + 12, j*42 + 12, 18, 18);
                 break;
 
                 case '.':
 
-                    painter.fillRect(i*150, j*150, 150, 150, blank_color);
+                    painter.fillRect(i*42, j*42, 42, 42, blank_color);
                 break;
 
             }
         }
     }
 
-    painter.fillRect(pm_x*150, pm_y*150, 150, 150, player_color);
+    painter.fillRect(pm_x*42, pm_y*42, 42, 42, player_color);
 
 
 
