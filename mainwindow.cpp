@@ -33,6 +33,16 @@ void MainWindow::timerTick() {
     this->field->ifCoin();
     ui->label->setNum(this->field->coinCount);
 
+    if (this->field->bufferOn == true) {
+        this->field->counter+=0.1;
+        if (this->field->counter == 10.0) {
+            this->field->bufferOn = false;
+        }
+        else {
+            update();
+        }
+    }
+
     if(this->field->canMove(nextKey)) {
         currentKey = nextKey;
     }

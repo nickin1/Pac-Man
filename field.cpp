@@ -19,6 +19,7 @@ void Field::paintEvent(QPaintEvent * Event) {
     QPainter painter(this);
     painter.fillRect(0, 0, 630, 630, wall_color);
 
+
     for (int i = 0; i < fieldWidth; ++i) {
         for (int j = 0; j < fieldHeight; ++j) {
             switch(fieldAscii[j][i]) {
@@ -32,19 +33,31 @@ void Field::paintEvent(QPaintEvent * Event) {
                     painter.fillRect(i*42, j*42, 42, 42, blank_color);
                     painter.setBrush(coin_color);
                     painter.drawEllipse(i*42 + 12, j*42 + 12, 18, 18);
+
                 break;
 
                 case '.':
 
                     painter.fillRect(i*42, j*42, 42, 42, blank_color);
+
                 break;
+
+                case '0':
+
+                    painter.fillRect(i*42, j*42, 42, 42, blank_color);
+                    painter.setBrush(cherry_color);
+                    painter.drawEllipse(i*42 + 10, j*42 + 10, 22, 22);
 
             }
         }
     }
 
-    painter.fillRect(pm_x*42, pm_y*42, 42, 42, player_color);
-
+    if (int(counter*10) % 2 != 0){
+        painter.fillRect(pm_x*42, pm_y*42, 42, 42, Qt::white);
+    }
+    else {
+        painter.fillRect(pm_x*42, pm_y*42, 42, 42, player_color);
+    }
 
 
 }
@@ -54,6 +67,11 @@ void Field::ifCoin() {
     if (fieldAscii[pm_y][pm_x] == 'o') {
         fieldAscii[pm_y][pm_x] = '.';
         coinCount++;
+    }
+    else if (fieldAscii[pm_y][pm_x] == '0'){
+
+        fieldAscii[pm_y][pm_x] = '.';
+        this->bufferOn = true;
     }
 }
 
@@ -120,16 +138,6 @@ bool Field::canMove(int key) {
 
     return false;
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
