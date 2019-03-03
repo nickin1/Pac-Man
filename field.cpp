@@ -52,7 +52,7 @@ void Field::paintEvent(QPaintEvent * Event) {
         }
     }
 
-    if (int(counter*10) % 2 != 0){
+    if (int(powerUpTimer*10) % 2 != 0){
         painter.fillRect(pm_x*42, pm_y*42, 42, 42, Qt::white);
     }
     else {
@@ -76,37 +76,50 @@ void Field::ifCoin() {
 }
 
 //returns true if it is possible to move in that direction, starts moving if possible; otherwise false.
-void Field::move(int key) {
+bool Field::move(int key) {
     switch (key)
       {
      case Qt::Key_Up:
-        if (pm_y != 0 && fieldAscii[pm_y-1][pm_x] != '#') {
-            pm_y = pm_y - 1;
+        if (fieldAscii[(pm_y - 1 + fieldHeight) % fieldHeight][pm_x] != '#') {
+
+            pm_y = (pm_y - 1 + fieldHeight) % fieldHeight;
+
+            return true;
         }
 
        break;
 
      case  Qt::Key_Down:
-        if (pm_y != fieldHeight - 1 && fieldAscii[pm_y+1][pm_x] != '#') {
-            pm_y = pm_y + 1;
+        if (fieldAscii[(pm_y + 1) % fieldHeight][pm_x] != '#') {
+
+            pm_y = (pm_y + 1) % fieldHeight;
+
+            return true;
         }
        break;
 
      case  Qt::Key_Left:
-        if (pm_x != 0 && fieldAscii[pm_y][pm_x - 1] != '#') {
-            pm_x = pm_x - 1;
+        if (fieldAscii[pm_y][(pm_x - 1 + fieldWidth) % fieldWidth] != '#') {
+
+            pm_x = (pm_x - 1 + fieldWidth) % fieldWidth;
+
+            return true;
         }
        break;
 
      case Qt::Key_Right:
-        if (pm_x != fieldWidth - 1 && fieldAscii[pm_y][pm_x + 1] != '#') {
-            pm_x = pm_x + 1;
+        if (fieldAscii[pm_y][(pm_x + 1) % fieldWidth] != '#') {
+
+            pm_x = (pm_x + 1) % fieldWidth;
+
+            return true;
         }
        break;
        }
+    return false;
 }
 
-
+/*
 bool Field::canMove(int key) {
     switch (key)
       {
@@ -139,6 +152,7 @@ bool Field::canMove(int key) {
     return false;
 }
 
+*/
 
 
 

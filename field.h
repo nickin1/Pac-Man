@@ -17,15 +17,15 @@ public:
     int coinCount = 0;
     bool bufferOn = false;
 
-    double counter = 0;
+    double powerUpTimer = 0;
 
 signals:
 
 
 public slots:
 
-    void move(int key);
-    bool canMove(int key);
+    bool move(int key);
+    //bool canMove(int key);
     void ifCoin();
 
 private:
