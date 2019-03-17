@@ -19,6 +19,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    //void testFunc();
 
 private slots:
     void timerTick();

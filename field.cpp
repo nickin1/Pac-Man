@@ -3,6 +3,13 @@
 #include <QTimer>
 #include <QtWidgets>
 #include "mainwindow.h"
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <utility>
+#include <QtDebug>
+
+using namespace std;
 
 Field::Field(QWidget *parent) : QWidget(parent)
 {
@@ -59,6 +66,10 @@ void Field::paintEvent(QPaintEvent * Event) {
         painter.fillRect(pm_x*42, pm_y*42, 42, 42, player_color);
     }
 
+    painter.fillRect(g_x*42, g_y*42, 42, 42, blank_color);
+    painter.setBrush(ghost_color);
+    painter.drawEllipse(g_x*42 + 6, g_y*42 + 6, 30, 30);
+
 
 }
 
@@ -76,7 +87,8 @@ void Field::ifCoin() {
 }
 
 //returns true if it is possible to move in that direction, starts moving if possible; otherwise false.
-bool Field::move(int key) {
+bool Field::pm_move(int key) {
+    //testSignal();
     switch (key)
       {
      case Qt::Key_Up:
@@ -119,41 +131,135 @@ bool Field::move(int key) {
     return false;
 }
 
-/*
-bool Field::canMove(int key) {
-    switch (key)
-      {
-     case Qt::Key_Up:
-        if (pm_y != 0 && fieldAscii[pm_y-1][pm_x] != '#') {
-            return true;
+void Field::g_move () {
+
+        int x = g_x;
+        int y = g_y;
+
+        int cur_x;
+        int cur_y;
+
+        queue <pair <int, int>> order;
+
+        int matrix[fieldHeight][fieldWidth];
+
+            for (int i = 0; i < fieldHeight; i++) {
+                for (int j = 0; j < fieldWidth; j++) {
+                    matrix[i][j] = -1;
+                }
+            }
+
+    while (1) {
+            ///UP
+            cur_y = (y - 1 + fieldHeight) % fieldHeight;
+            cur_x = x;
+            if (fieldAscii[cur_y][cur_x] != '#'
+                && matrix[cur_y][cur_x] == -1) {
+
+                matrix[cur_y][cur_x] = matrix[y][x] + 1;
+
+                order.push(make_pair(cur_y,cur_x));
+
+            }
+
+            cur_y = (y + 1) % fieldHeight;
+            cur_x = x;
+            ///////////////////////////////////////////////////////////////
+            ///DOWN
+            if (fieldAscii[cur_y][cur_x] != '#'
+                && matrix[cur_y][cur_x] == -1) {
+
+                matrix[cur_y][cur_x] = matrix[y][x] + 1;
+
+                order.push(make_pair(cur_y,cur_x));
+
+            }
+            ///////////////////////////////////////////////////////////////
+            cur_y = y;
+            cur_x = (x + 1) % fieldWidth;
+            ///RIGHT
+            if (fieldAscii[cur_y][cur_x] != '#'
+                && matrix[cur_y][cur_x] == -1) {
+
+                matrix[cur_y][cur_x] = matrix[y][x] + 1;
+
+                order.push(make_pair(cur_y,cur_x));
+
+            }
+            ////////////////////////////////////////////////////////////////////
+            cur_y = y;
+            cur_x = (x - 1 + fieldWidth) % fieldWidth;
+            ///LEFT
+            if (fieldAscii[cur_y][cur_x] != '#'
+                && matrix[cur_y][cur_x] == -1) {
+
+                matrix[cur_y][cur_x] = matrix[y][x] + 1;
+
+                order.push(make_pair(cur_y,cur_x));
+
+            }
+
+            y = order.front().first;
+            x = order.front().second;
+
+            order.pop();
+
+            if (x == pm_x && y == pm_y) {
+                //matrix[cur_y][cur_x] = matrix[y][x] + 1;
+                break;
+
+            }
         }
 
-       break;
+    while (matrix[y][x] != 0) { ////////////////////////////////////////////////////////////////////
+            ///UP
+            cur_y = (y - 1 + fieldHeight) % fieldHeight;
+            cur_x = x;
+            if (matrix[cur_y][cur_x] == matrix[y][x] - 1) {
+                x = cur_x;
+                y = cur_y;
 
-     case  Qt::Key_Down:
-        if (pm_y != fieldHeight - 1 && fieldAscii[pm_y+1][pm_x] != '#') {
-            return true;
+                continue;
+            }
+            ///////////////////////////////////////////////////////////////
+            cur_y = (y + 1) % fieldHeight;
+            cur_x = x;
+            ///DOWN
+            if (matrix[cur_y][cur_x] == matrix[y][x] - 1) {
+                x = cur_x;
+                y = cur_y;
+
+                continue;
+            }
+            ///////////////////////////////////////////////////////////////
+            cur_y = y;
+            cur_x = (x + 1) % fieldWidth;
+            ///RIGHT
+            if (matrix[cur_y][cur_x] == matrix[y][x] - 1) {
+                x = cur_x;
+                y = cur_y;
+
+                continue;
+            }
+            ////////////////////////////////////////////////////////////////////
+            cur_y = y;
+            cur_x = (x - 1 + fieldWidth) % fieldWidth;
+            ///LEFT
+            if (matrix[cur_y][cur_x] == matrix[y][x] - 1) {
+                x = cur_x;
+                y = cur_y;
+
+                continue;
+            }
         }
-       break;
 
-     case  Qt::Key_Left:
-        if (pm_x != 0 && fieldAscii[pm_y][pm_x - 1] != '#') {
-            return true;
-        }
-       break;
+        g_y = y;
+        g_x = x;
 
-     case Qt::Key_Right:
-        if (pm_x != fieldWidth - 1 && fieldAscii[pm_y][pm_x + 1] != '#') {
-            return true;
-        }
-       break;
-       }
 
-    return false;
+        qDebug("%d %d", x, y);
+
 }
-
-*/
-
 
 
 

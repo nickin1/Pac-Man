@@ -3,6 +3,7 @@
 #include "field.h"
 #include <QTimer>
 #include <QKeyEvent>
+#include <QtDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -14,7 +15,9 @@ MainWindow::MainWindow(QWidget *parent) :
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerTick()));
     timer->start(150); //time specified in ms
+    this->ui->pushButton->setFocusPolicy(Qt::NoFocus);
 
+    //connect(field, SIGNAL(testSignal()), this, SLOT(testFunc()));
 
     field = new Field;
     ui->verticalLayout->addWidget(field);
@@ -43,15 +46,14 @@ void MainWindow::timerTick() {
         }
     }
 
-    if(this->field->move(nextKey)) {
+    if(this->field->pm_move(nextKey)) {
         currentKey = nextKey;
     }
     else {
-        this->field->move(currentKey);
+        this->field->pm_move(currentKey);
     }
 
-
-
+        field->g_move();
 
 }
 
@@ -59,8 +61,11 @@ void MainWindow::keyPressEvent(QKeyEvent * event) {
     nextKey = event->key();
 }
 
-
-
+/*
+void MainWindow::testFunc() {
+    qDebug() << "Works!";
+}
+*/
 
 
 
