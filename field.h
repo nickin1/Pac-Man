@@ -19,6 +19,15 @@ public:
 
     double powerUpTimer = 0;
 
+    bool gameOver = false;
+    bool gamePaused = false;
+
+    int pm_x = 10;
+    int pm_y = 15;
+
+    int g_x = 10;
+    int g_y = 9;
+
 signals:
 
 
@@ -66,11 +75,6 @@ private:
     const int fieldHeight =21;
     const int fieldWidth = 21;
 
-    int pm_x = 10;
-    int pm_y = 15;
-
-    int g_x = 10;
-    int g_y = 9;
 
     char g_direction = 'u'; // 'u', 'd', 'r', 'l'.
 

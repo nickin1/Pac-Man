@@ -59,6 +59,17 @@ void Field::paintEvent(QPaintEvent * Event) {
         }
     }
 
+
+    if (gameOver) {
+       QFont font("Courier", 48);
+       painter.setFont(font);
+       font.setPointSize(48);
+
+       painter.setPen(Qt::white);
+
+       painter.drawText(150, 150, "Game Over");
+    }
+
     if (int(powerUpTimer*10) % 2 != 0){
         painter.fillRect(pm_x*42, pm_y*42, 42, 42, Qt::white);
     }

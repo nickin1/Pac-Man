@@ -22,15 +22,22 @@ public:
 public slots:
     //void testFunc();
 
+    void endGame();
+    void pauseGame();
+
 private slots:
     void timerTick();
     //void updateField();
     void keyPressEvent(QKeyEvent * event);
 
+
+
+    void on_Pause_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTimer * timer;
-    double time = 0;
+    int time = 0;
 
     QString fieldOutput;
     int currentKey;
