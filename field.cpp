@@ -11,6 +11,8 @@
 
 using namespace std;
 
+//emit testSignal();
+
 Field::Field(QWidget *parent) : QWidget(parent)
 {
 
@@ -20,6 +22,8 @@ Field::Field(QWidget *parent) : QWidget(parent)
     blank_color = QColor(0, 0, 0, 255);
     player_color = QColor(255, 255, 0, 255);
     ghost_color = QColor(255, 102, 255, 255);
+
+
 }
 void Field::paintEvent(QPaintEvent * Event) {
 
@@ -61,13 +65,15 @@ void Field::paintEvent(QPaintEvent * Event) {
 
 
     if (gameOver) {
-       QFont font("Courier", 48);
+       QFont font("Arial", 100);
        painter.setFont(font);
-       font.setPointSize(48);
+       //font.setPointSize(48);
+
+       QRectF rect{0, 0, double(fieldSize), double(fieldSize)};
 
        painter.setPen(Qt::white);
 
-       painter.drawText(150, 150, "Game Over");
+       painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, "Game Over");
     }
 
     if (int(powerUpTimer*10) % 2 != 0){
@@ -92,6 +98,7 @@ void Field::ifCoin() {
     }
     else if (fieldAscii[pm_y][pm_x] == '0'){
 
+        emit testSignal();
         fieldAscii[pm_y][pm_x] = '.';
         this->bufferOn = true;
     }

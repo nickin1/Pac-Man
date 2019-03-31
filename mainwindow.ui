@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1299</width>
-    <height>1124</height>
+    <width>1011</width>
+    <height>967</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>102</x>
       <y>20</y>
-      <width>1141</width>
-      <height>1021</height>
+      <width>900</width>
+      <height>900</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout"/>
@@ -122,8 +122,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1299</width>
-     <height>25</height>
+     <width>1011</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuPac_Man">

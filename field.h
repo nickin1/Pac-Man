@@ -29,7 +29,7 @@ public:
     int g_y = 9;
 
 signals:
-
+    void testSignal();
 
 public slots:
 
@@ -75,8 +75,12 @@ private:
     const int fieldHeight =21;
     const int fieldWidth = 21;
 
+    const int fieldSize = fieldHeight * 42; //block size
+
 
     char g_direction = 'u'; // 'u', 'd', 'r', 'l'.
+
+
 
 
 

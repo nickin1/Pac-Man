@@ -24,15 +24,18 @@ public slots:
 
     void endGame();
     void pauseGame();
+    void quitGame();
+
+    void testFunc();
 
 private slots:
     void timerTick();
     //void updateField();
     void keyPressEvent(QKeyEvent * event);
 
-
-
     void on_Pause_clicked();
+    void on_Quit_clicked();
+    void on_Start_clicked();
 
 private:
     Ui::MainWindow *ui;

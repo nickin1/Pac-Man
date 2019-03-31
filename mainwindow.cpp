@@ -14,17 +14,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerTick()));
-    timer->start(150); //time specified in ms
+   // timer->start(150); //time specified in ms
     this->ui->Start->setFocusPolicy(Qt::NoFocus);
     this->ui->Pause->setFocusPolicy(Qt::NoFocus);
     this->ui->Quit->setFocusPolicy(Qt::NoFocus);
 
     //connect(this->ui->Start, SIGNAL(clicked()), this, SLOT(pauseGame()));
 
-    //connect(field, SIGNAL(testSignal()), this, SLOT(testFunc()));
 
     field = new Field;
     ui->verticalLayout->addWidget(field);
+
+    connect(field, SIGNAL(testSignal()), this, SLOT(testFunc()));
 }
 
 MainWindow::~MainWindow()
@@ -82,28 +83,43 @@ void MainWindow::endGame() {
     timer->stop();
 
     update();
+}
 
-
+void MainWindow::quitGame() {
+    delete ui;
+    delete timer;
 }
 
 void MainWindow::pauseGame() {
     if (field->gamePaused) {
+        ui->Pause->setText("Pause");
         field->gamePaused = false;
-        qDebug() << "unpausing";
-    } else {
+    }
+    else {
+        ui->Pause->setText("Unpause");
         field->gamePaused = true;
-        qDebug() << "pausing";
     }
 }
 
 
-/*
 void MainWindow::testFunc() {
-    qDebug() << "Works!";
+    pauseGame();
 }
-*/
 
 void MainWindow::on_Pause_clicked()
 {
     pauseGame();
+}
+
+
+void MainWindow::on_Quit_clicked()
+{
+    quitGame();
+}
+
+void MainWindow::on_Start_clicked()
+{
+    timer->start(150); //time specified in ms
+
+    ui->Start->deleteLater();
 }
