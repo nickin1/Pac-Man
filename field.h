@@ -14,13 +14,14 @@ public:
     void paintEvent(QPaintEvent * Event) override;
 
 
-    int coinCount = 0;
+    int scoreCount = 0;
     bool bufferOn = false;
 
     double powerUpTimer = 0;
 
     bool gameOver = false;
     bool gamePaused = false;
+    bool gameStarted = false;
 
     int pm_x = 10;
     int pm_y = 15;
@@ -28,8 +29,6 @@ public:
     int g_x = 10;
     int g_y = 9;
 
-signals:
-    void testSignal();
 
 public slots:
 
@@ -37,6 +36,8 @@ public slots:
     void g_move();
     //bool canMove(int key);
     void ifCoin();
+
+    void resetField();
 
 //signals:
     //void testSignal();
@@ -61,7 +62,7 @@ private:
                              {'.','.','.','.','.','o','.','.','#','.','.','.','#','.','.','o','.','.','.','.','.'},
                              {'#','#','#','#','#','o','#','.','#','#','#','#','#','.','#','o','#','#','#','#','#'},
                              {'.','.','.','.','#','o','#','.','.','.','0','.','.','.','#','o','#','.','.','.','.'},
-                             {'.','#','#','#','#','o','#','.','#','#','#','#','#','o','#','o','#','#','#','#','.'},
+                             {'.','#','#','#','#','o','#','.','#','#','#','#','#','.','#','o','#','#','#','#','.'},
                              {'.','#','o','o','o','o','o','o','o','o','#','o','o','o','o','o','o','o','o','#','.'},
                              {'.','#','o','#','#','o','#','#','#','o','#','o','#','#','#','o','#','#','o','#','.'},
                              {'.','#','o','o','#','o','o','o','o','o','o','o','o','o','o','o','#','o','o','#','.'},
@@ -76,6 +77,7 @@ private:
     const int fieldWidth = 21;
 
     const int fieldSize = fieldHeight * 42; //block size
+
 
 
     char g_direction = 'u'; // 'u', 'd', 'r', 'l'.

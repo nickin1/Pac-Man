@@ -64,17 +64,7 @@ void Field::paintEvent(QPaintEvent * Event) {
     }
 
 
-    if (gameOver) {
-       QFont font("Arial", 100);
-       painter.setFont(font);
-       //font.setPointSize(48);
 
-       QRectF rect{0, 0, double(fieldSize), double(fieldSize)};
-
-       painter.setPen(Qt::white);
-
-       painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, "Game Over");
-    }
 
     if (int(powerUpTimer*10) % 2 != 0){
         painter.fillRect(pm_x*42, pm_y*42, 42, 42, Qt::white);
@@ -87,6 +77,17 @@ void Field::paintEvent(QPaintEvent * Event) {
     painter.setBrush(ghost_color);
     painter.drawEllipse(g_x*42 + 6, g_y*42 + 6, 30, 30);
 
+    if (gameOver) {
+       QFont font("Arial", 100);
+       painter.setFont(font);
+       //font.setPointSize(48);
+
+       QRectF rect{0, 0, double(fieldSize), double(fieldSize)};
+
+       painter.setPen(Qt::white);
+
+       painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, "Game Over");
+    }
 
 }
 
@@ -94,15 +95,29 @@ void Field::paintEvent(QPaintEvent * Event) {
 void Field::ifCoin() {
     if (fieldAscii[pm_y][pm_x] == 'o') {
         fieldAscii[pm_y][pm_x] = '.';
-        coinCount++;
+        scoreCount+= 10;
     }
     else if (fieldAscii[pm_y][pm_x] == '0'){
 
-        emit testSignal();
+        scoreCount+= 200;
+
         fieldAscii[pm_y][pm_x] = '.';
         this->bufferOn = true;
     }
 }
+
+void Field::resetField() {
+    pm_x = 10;
+    pm_y = 15;
+
+    g_x = 10;
+    g_y = 9;
+
+    gameOver = false;
+
+    update();
+}
+
 
 //returns true if it is possible to move in that direction, starts moving if possible; otherwise false.
 bool Field::pm_move(int key) {

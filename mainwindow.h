@@ -25,8 +25,8 @@ public slots:
     void endGame();
     void pauseGame();
     void quitGame();
+    void resetGame();
 
-    void testFunc();
 
 private slots:
     void timerTick();
