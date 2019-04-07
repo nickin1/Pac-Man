@@ -22,9 +22,47 @@ Field::Field(QWidget *parent) : QWidget(parent)
     blank_color = QColor(0, 0, 0, 255);
     player_color = QColor(255, 255, 0, 255);
     ghost_color = QColor(255, 102, 255, 255);
-
+    restart();
 
 }
+
+void Field::restart() {
+    static char new_field[21][21] = {{'.','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','.'},
+                                 {'.','#','o','o','o','o','o','o','o','o','#','o','o','o','o','o','o','o','o','#','.'},
+                                 {'.','#','o','#','#','o','#','#','#','o','#','o','#','#','#','o','#','#','o','#','.'},
+                                 {'.','#','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','#','.'},
+                                 {'.','#','o','#','#','o','#','o','#','#','#','#','#','o','#','o','#','#','o','#','.'},
+                                 {'.','#','o','o','o','o','#','o','o','o','#','o','o','o','#','o','o','o','o','#','.'},
+                                 {'.','#','#','#','#','o','#','#','#','.','#','.','#','#','#','o','#','#','#','#','.'},
+                                 {'.','.','.','.','#','o','#','.','.','.','.','.','.','.','#','o','#','.','.','.','.'},
+                                 {'#','#','#','#','#','o','#','.','#','#','.','#','#','.','#','o','#','#','#','#','#'},
+                                 {'.','.','.','.','.','o','.','.','#','.','.','.','#','.','.','o','.','.','.','.','.'},
+                                 {'#','#','#','#','#','o','#','.','#','#','#','#','#','.','#','o','#','#','#','#','#'},
+                                 {'.','.','.','.','#','o','#','.','.','.','0','.','.','.','#','o','#','.','.','.','.'},
+                                 {'.','#','#','#','#','o','#','.','#','#','#','#','#','o','#','o','#','#','#','#','.'},
+                                 {'.','#','o','o','o','o','o','o','o','o','#','o','o','o','o','o','o','o','o','#','.'},
+                                 {'.','#','o','#','#','o','#','#','#','o','#','o','#','#','#','o','#','#','o','#','.'},
+                                 {'.','#','o','o','#','o','o','o','o','o','o','o','o','o','o','o','#','o','o','#','.'},
+                                 {'.','#','#','o','#','o','#','o','#','#','#','#','#','o','#','o','#','o','#','#','.'},
+                                 {'.','#','o','o','o','o','#','o','o','o','#','o','o','o','#','o','o','o','o','#','.'},
+                                 {'.','#','o','#','#','#','#','#','#','o','#','o','#','#','#','#','#','#','o','#','.'},
+                                 {'.','#','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','#','.'},
+                                 {'.','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','.'}};
+
+    fieldAscii = reinterpret_cast<char*> (new_field);
+    fieldWidth = 21;
+    fieldHeight = 21;
+    pm_x = 10;
+    pm_y = 15;
+    g_x = 10;
+    g_y = 9;
+    scoreCount = 0;
+    weaknessOn = false;
+    powerUpTimer = 0;
+    gameOver = false;
+    gamePaused = false;
+}
+
 void Field::paintEvent(QPaintEvent * Event) {
 
     QPainter painter(this);
@@ -33,7 +71,7 @@ void Field::paintEvent(QPaintEvent * Event) {
 
     for (int i = 0; i < fieldWidth; ++i) {
         for (int j = 0; j < fieldHeight; ++j) {
-            switch(fieldAscii[j][i]) {
+            switch(/*fieldAscii[j][i]*/ *(fieldAscii + fieldWidth*j + i)) {
                 case '#':
 
                     painter.fillRect(i*42, j*42, 42, 42, wall_color);
@@ -64,7 +102,17 @@ void Field::paintEvent(QPaintEvent * Event) {
     }
 
 
+    if (gameOver) {
+       QFont font("Arial", 30);
+       painter.setFont(font);
+       //font.setPointSize(48);
 
+       QRectF rect{0, 0, double(fieldSize), double(fieldSize)};
+
+       painter.setPen(Qt::white);
+
+       painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, "Game Over");
+    }
 
     if (int(powerUpTimer*10) % 2 != 0){
         painter.fillRect(pm_x*42, pm_y*42, 42, 42, Qt::white);
@@ -77,55 +125,32 @@ void Field::paintEvent(QPaintEvent * Event) {
     painter.setBrush(ghost_color);
     painter.drawEllipse(g_x*42 + 6, g_y*42 + 6, 30, 30);
 
-    if (gameOver) {
-       QFont font("Arial", 100);
-       painter.setFont(font);
-       //font.setPointSize(48);
-
-       QRectF rect{0, 0, double(fieldSize), double(fieldSize)};
-
-       painter.setPen(Qt::white);
-
-       painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, "Game Over");
-    }
 
 }
 
 //if there is a coin, pick it up and add to coin counter.
 void Field::ifCoin() {
-    if (fieldAscii[pm_y][pm_x] == 'o') {
-        fieldAscii[pm_y][pm_x] = '.';
-        scoreCount+= 10;
+    if ( *(fieldAscii + fieldWidth*pm_y + pm_x) == 'o') {
+        *(fieldAscii + fieldWidth*pm_y + pm_x) = '.';
+        scoreCount++;
     }
-    else if (fieldAscii[pm_y][pm_x] == '0'){
+    else if (*(fieldAscii + fieldWidth*pm_y + pm_x) == '0'){
 
-        scoreCount+= 200;
-
-        fieldAscii[pm_y][pm_x] = '.';
-        this->bufferOn = true;
+        *(fieldAscii + fieldWidth*pm_y + pm_x) = '.';
+        this->weaknessOn = true;
     }
 }
-
-void Field::resetField() {
-    pm_x = 10;
-    pm_y = 15;
-
-    g_x = 10;
-    g_y = 9;
-
-    gameOver = false;
-
-    update();
-}
-
 
 //returns true if it is possible to move in that direction, starts moving if possible; otherwise false.
 bool Field::pm_move(int key) {
     //testSignal();
+    int x, y;
     switch (key)
       {
      case Qt::Key_Up:
-        if (fieldAscii[(pm_y - 1 + fieldHeight) % fieldHeight][pm_x] != '#') {
+        y = (pm_y - 1 + fieldHeight) % fieldHeight;
+        x = pm_x;
+        if (*(fieldAscii + fieldWidth*y + x) != '#') {
 
             pm_y = (pm_y - 1 + fieldHeight) % fieldHeight;
 
@@ -135,7 +160,9 @@ bool Field::pm_move(int key) {
        break;
 
      case  Qt::Key_Down:
-        if (fieldAscii[(pm_y + 1) % fieldHeight][pm_x] != '#') {
+        y = (pm_y + 1) % fieldHeight;
+        x = pm_x;
+        if (*(fieldAscii + fieldWidth*y + x) != '#') {
 
             pm_y = (pm_y + 1) % fieldHeight;
 
@@ -144,7 +171,9 @@ bool Field::pm_move(int key) {
        break;
 
      case  Qt::Key_Left:
-        if (fieldAscii[pm_y][(pm_x - 1 + fieldWidth) % fieldWidth] != '#') {
+        y = pm_y;
+        x = (pm_x - 1 + fieldWidth) % fieldWidth;
+        if (*(fieldAscii + fieldWidth*y + x) != '#') {
 
             pm_x = (pm_x - 1 + fieldWidth) % fieldWidth;
 
@@ -153,7 +182,9 @@ bool Field::pm_move(int key) {
        break;
 
      case Qt::Key_Right:
-        if (fieldAscii[pm_y][(pm_x + 1) % fieldWidth] != '#') {
+        y = pm_y;
+        x = (pm_x + 1) % fieldWidth;
+        if (*(fieldAscii + fieldWidth*y + x) != '#') {
 
             pm_x = (pm_x + 1) % fieldWidth;
 
@@ -165,6 +196,7 @@ bool Field::pm_move(int key) {
 }
 
 void Field::g_move () {
+    // Ghost seeks shortest path to Pacman and moves 1 cell along this path
 
         int x = g_x;
         int y = g_y;
@@ -181,12 +213,13 @@ void Field::g_move () {
                     matrix[i][j] = -1;
                 }
             }
+        matrix[y][x] = 0;
 
-    while (1) {
+        while (1) {
             ///UP
             cur_y = (y - 1 + fieldHeight) % fieldHeight;
             cur_x = x;
-            if (fieldAscii[cur_y][cur_x] != '#'
+            if (*(fieldAscii + fieldWidth*cur_y + cur_x) != '#'
                 && matrix[cur_y][cur_x] == -1) {
 
                 matrix[cur_y][cur_x] = matrix[y][x] + 1;
@@ -199,7 +232,7 @@ void Field::g_move () {
             cur_x = x;
             ///////////////////////////////////////////////////////////////
             ///DOWN
-            if (fieldAscii[cur_y][cur_x] != '#'
+            if (*(fieldAscii + fieldWidth*cur_y + cur_x) != '#'
                 && matrix[cur_y][cur_x] == -1) {
 
                 matrix[cur_y][cur_x] = matrix[y][x] + 1;
@@ -211,7 +244,7 @@ void Field::g_move () {
             cur_y = y;
             cur_x = (x + 1) % fieldWidth;
             ///RIGHT
-            if (fieldAscii[cur_y][cur_x] != '#'
+            if (*(fieldAscii + fieldWidth*cur_y + cur_x) != '#'
                 && matrix[cur_y][cur_x] == -1) {
 
                 matrix[cur_y][cur_x] = matrix[y][x] + 1;
@@ -223,7 +256,7 @@ void Field::g_move () {
             cur_y = y;
             cur_x = (x - 1 + fieldWidth) % fieldWidth;
             ///LEFT
-            if (fieldAscii[cur_y][cur_x] != '#'
+            if (*(fieldAscii + fieldWidth*cur_y + cur_x) != '#'
                 && matrix[cur_y][cur_x] == -1) {
 
                 matrix[cur_y][cur_x] = matrix[y][x] + 1;
@@ -244,7 +277,7 @@ void Field::g_move () {
             }
         }
 
-    while (matrix[y][x] != 0) { ////////////////////////////////////////////////////////////////////
+    while (matrix[y][x] != 1) { ////////////////////////////////////////////////////////////////////
             ///UP
             cur_y = (y - 1 + fieldHeight) % fieldHeight;
             cur_x = x;
@@ -288,9 +321,6 @@ void Field::g_move () {
 
         g_y = y;
         g_x = x;
-
-
-        qDebug("%d %d", x, y);
 
 }
 
