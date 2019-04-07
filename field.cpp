@@ -213,13 +213,13 @@ void Field::g_move () {
                     matrix[i][j] = -1;
                 }
             }
-        matrix[x][y] = 0;
+        matrix[y][x] = 0;
 
         while (1) {
             ///UP
             cur_y = (y - 1 + fieldHeight) % fieldHeight;
             cur_x = x;
-            if (*(fieldAscii + fieldWidth*cur_x + cur_y) != '#'
+            if (*(fieldAscii + fieldWidth*cur_y + cur_x) != '#'
                 && matrix[cur_y][cur_x] == -1) {
 
                 matrix[cur_y][cur_x] = matrix[y][x] + 1;
@@ -277,7 +277,7 @@ void Field::g_move () {
             }
         }
 
-    while (matrix[y][x] != 0) { ////////////////////////////////////////////////////////////////////
+    while (matrix[y][x] != 1) { ////////////////////////////////////////////////////////////////////
             ///UP
             cur_y = (y - 1 + fieldHeight) % fieldHeight;
             cur_x = x;
