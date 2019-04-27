@@ -43,8 +43,8 @@ private:
     int time = 0;
 
     QString fieldOutput;
-    int currentKey;
-    int nextKey;
+    int currentKey = 0;
+    int nextKey = 0;
 
     Field * field;
 };

@@ -115,7 +115,8 @@ void MainWindow::pauseGame() {
 void MainWindow::resetGame() {
     field->restart();
     timer->stop();
-
+    currentKey = 0;
+    nextKey = 0;
 }
 
 void MainWindow::on_Pause_clicked()

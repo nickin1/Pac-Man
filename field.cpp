@@ -27,29 +27,7 @@ Field::Field(QWidget *parent) : QWidget(parent)
 }
 
 void Field::restart() {
-    static char new_field[21][21] = {{'.','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','.'},
-                                 {'.','#','o','o','o','o','o','o','o','o','#','o','o','o','o','o','o','o','o','#','.'},
-                                 {'.','#','o','#','#','o','#','#','#','o','#','o','#','#','#','o','#','#','o','#','.'},
-                                 {'.','#','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','#','.'},
-                                 {'.','#','o','#','#','o','#','o','#','#','#','#','#','o','#','o','#','#','o','#','.'},
-                                 {'.','#','o','o','o','o','#','o','o','o','#','o','o','o','#','o','o','o','o','#','.'},
-                                 {'.','#','#','#','#','o','#','#','#','.','#','.','#','#','#','o','#','#','#','#','.'},
-                                 {'.','.','.','.','#','o','#','.','.','.','.','.','.','.','#','o','#','.','.','.','.'},
-                                 {'#','#','#','#','#','o','#','.','#','#','.','#','#','.','#','o','#','#','#','#','#'},
-                                 {'.','.','.','.','.','o','.','.','#','.','.','.','#','.','.','o','.','.','.','.','.'},
-                                 {'#','#','#','#','#','o','#','.','#','#','#','#','#','.','#','o','#','#','#','#','#'},
-                                 {'.','.','.','.','#','o','#','.','.','.','0','.','.','.','#','o','#','.','.','.','.'},
-                                 {'.','#','#','#','#','o','#','.','#','#','#','#','#','o','#','o','#','#','#','#','.'},
-                                 {'.','#','o','o','o','o','o','o','o','o','#','o','o','o','o','o','o','o','o','#','.'},
-                                 {'.','#','o','#','#','o','#','#','#','o','#','o','#','#','#','o','#','#','o','#','.'},
-                                 {'.','#','o','o','#','o','o','o','o','o','o','o','o','o','o','o','#','o','o','#','.'},
-                                 {'.','#','#','o','#','o','#','o','#','#','#','#','#','o','#','o','#','o','#','#','.'},
-                                 {'.','#','o','o','o','o','#','o','o','o','#','o','o','o','#','o','o','o','o','#','.'},
-                                 {'.','#','o','#','#','#','#','#','#','o','#','o','#','#','#','#','#','#','o','#','.'},
-                                 {'.','#','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','#','.'},
-                                 {'.','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','.'}};
-
-    fieldAscii = reinterpret_cast<char*> (new_field);
+    memcpy(fieldAscii, new_field, 21*21);
     fieldWidth = 21;
     fieldHeight = 21;
     pm_x = 10;
@@ -71,7 +49,7 @@ void Field::paintEvent(QPaintEvent * Event) {
 
     for (int i = 0; i < fieldWidth; ++i) {
         for (int j = 0; j < fieldHeight; ++j) {
-            switch(/*fieldAscii[j][i]*/ *(fieldAscii + fieldWidth*j + i)) {
+            switch(fieldAscii[j][i]) {
                 case '#':
 
                     painter.fillRect(i*42, j*42, 42, 42, wall_color);
@@ -130,13 +108,13 @@ void Field::paintEvent(QPaintEvent * Event) {
 
 //if there is a coin, pick it up and add to coin counter.
 void Field::ifCoin() {
-    if ( *(fieldAscii + fieldWidth*pm_y + pm_x) == 'o') {
-        *(fieldAscii + fieldWidth*pm_y + pm_x) = '.';
+    if ( fieldAscii[pm_y][pm_x] == 'o') {
+        fieldAscii[pm_y][pm_x] = '.';
         scoreCount++;
     }
-    else if (*(fieldAscii + fieldWidth*pm_y + pm_x) == '0'){
+    else if (fieldAscii[pm_y][pm_x] == '0'){
 
-        *(fieldAscii + fieldWidth*pm_y + pm_x) = '.';
+        fieldAscii[pm_y][pm_x] = '.';
         this->weaknessOn = true;
     }
 }
@@ -150,7 +128,7 @@ bool Field::pm_move(int key) {
      case Qt::Key_Up:
         y = (pm_y - 1 + fieldHeight) % fieldHeight;
         x = pm_x;
-        if (*(fieldAscii + fieldWidth*y + x) != '#') {
+        if (fieldAscii[y][x] != '#') {
 
             pm_y = (pm_y - 1 + fieldHeight) % fieldHeight;
 
@@ -162,7 +140,7 @@ bool Field::pm_move(int key) {
      case  Qt::Key_Down:
         y = (pm_y + 1) % fieldHeight;
         x = pm_x;
-        if (*(fieldAscii + fieldWidth*y + x) != '#') {
+        if (fieldAscii[y][x] != '#') {
 
             pm_y = (pm_y + 1) % fieldHeight;
 
@@ -173,7 +151,7 @@ bool Field::pm_move(int key) {
      case  Qt::Key_Left:
         y = pm_y;
         x = (pm_x - 1 + fieldWidth) % fieldWidth;
-        if (*(fieldAscii + fieldWidth*y + x) != '#') {
+        if (fieldAscii[y][x] != '#') {
 
             pm_x = (pm_x - 1 + fieldWidth) % fieldWidth;
 
@@ -184,7 +162,7 @@ bool Field::pm_move(int key) {
      case Qt::Key_Right:
         y = pm_y;
         x = (pm_x + 1) % fieldWidth;
-        if (*(fieldAscii + fieldWidth*y + x) != '#') {
+        if (fieldAscii[y][x] != '#') {
 
             pm_x = (pm_x + 1) % fieldWidth;
 
@@ -219,7 +197,7 @@ void Field::g_move () {
             ///UP
             cur_y = (y - 1 + fieldHeight) % fieldHeight;
             cur_x = x;
-            if (*(fieldAscii + fieldWidth*cur_y + cur_x) != '#'
+            if (fieldAscii[cur_y][cur_x] != '#'
                 && matrix[cur_y][cur_x] == -1) {
 
                 matrix[cur_y][cur_x] = matrix[y][x] + 1;
@@ -232,7 +210,7 @@ void Field::g_move () {
             cur_x = x;
             ///////////////////////////////////////////////////////////////
             ///DOWN
-            if (*(fieldAscii + fieldWidth*cur_y + cur_x) != '#'
+            if (fieldAscii[cur_y][cur_x] != '#'
                 && matrix[cur_y][cur_x] == -1) {
 
                 matrix[cur_y][cur_x] = matrix[y][x] + 1;
@@ -244,7 +222,7 @@ void Field::g_move () {
             cur_y = y;
             cur_x = (x + 1) % fieldWidth;
             ///RIGHT
-            if (*(fieldAscii + fieldWidth*cur_y + cur_x) != '#'
+            if (fieldAscii[cur_y][cur_x] != '#'
                 && matrix[cur_y][cur_x] == -1) {
 
                 matrix[cur_y][cur_x] = matrix[y][x] + 1;
@@ -256,7 +234,7 @@ void Field::g_move () {
             cur_y = y;
             cur_x = (x - 1 + fieldWidth) % fieldWidth;
             ///LEFT
-            if (*(fieldAscii + fieldWidth*cur_y + cur_x) != '#'
+            if (fieldAscii[cur_y][cur_x] != '#'
                 && matrix[cur_y][cur_x] == -1) {
 
                 matrix[cur_y][cur_x] = matrix[y][x] + 1;
