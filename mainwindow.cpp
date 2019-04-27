@@ -24,8 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     field = new Field;
     ui->verticalLayout->addWidget(field);
-
-    connect(field, SIGNAL(testSignal()), this, SLOT(testFunc()));
 }
 
 MainWindow::~MainWindow()
@@ -41,13 +39,15 @@ void MainWindow::timerTick() {
     time+=1;
     ui->time->setNum(time/10.0);
     update();
-    this->field->ifCoin();
-    ui->label->setNum(this->field->coinCount);
 
-    if (this->field->bufferOn == true) {
+    this->field->ifCoin();
+
+    ui->label->setNum(this->field->scoreCount);
+
+    if (this->field->weaknessOn == true) {
         this->field->powerUpTimer+=0.1;
         if (this->field->powerUpTimer >= 10.0) {
-            this->field->bufferOn = false;
+            this->field->weaknessOn = false;
         }
         else {
             update();
@@ -67,7 +67,18 @@ void MainWindow::timerTick() {
     }
 
     if (field->pm_x == field->g_x && field->pm_y == field->g_y) {
-        endGame();
+        if (field->weaknessOn) {
+
+            field->g_x = 10;
+            field->g_y = 9;
+
+            field->scoreCount += 200;
+
+            field->weaknessOn = false;
+        }
+        else {
+            endGame();
+        }
     }
 
 }
@@ -86,8 +97,7 @@ void MainWindow::endGame() {
 }
 
 void MainWindow::quitGame() {
-    delete ui;
-    delete timer;
+    this->~MainWindow();
 }
 
 void MainWindow::pauseGame() {
@@ -102,15 +112,16 @@ void MainWindow::pauseGame() {
 }
 
 
-void MainWindow::testFunc() {
-    pauseGame();
+void MainWindow::resetGame() {
+    field->restart();
+    timer->stop();
+
 }
 
 void MainWindow::on_Pause_clicked()
 {
     pauseGame();
 }
-
 
 void MainWindow::on_Quit_clicked()
 {
@@ -119,7 +130,16 @@ void MainWindow::on_Quit_clicked()
 
 void MainWindow::on_Start_clicked()
 {
-    timer->start(150); //time specified in ms
+    if (field->gameStarted){
+        field->gameStarted = false;
+        resetGame();
+        ui->Start->setText("Start");
 
-    ui->Start->deleteLater();
+    }
+    else {
+        field->gameStarted = true;
+        ui->Start->setText("Reset");
+        timer->start(150); //time specified in ms
+
+    }
 }

@@ -48,6 +48,7 @@ void Field::restart() {
                                  {'.','#','o','#','#','#','#','#','#','o','#','o','#','#','#','#','#','#','o','#','.'},
                                  {'.','#','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','o','#','.'},
                                  {'.','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','.'}};
+
     fieldAscii = reinterpret_cast<char*> (new_field);
     fieldWidth = 21;
     fieldHeight = 21;
@@ -55,8 +56,8 @@ void Field::restart() {
     pm_y = 15;
     g_x = 10;
     g_y = 9;
-    coinCount = 0;
-    bufferOn = false;
+    scoreCount = 0;
+    weaknessOn = false;
     powerUpTimer = 0;
     gameOver = false;
     gamePaused = false;
@@ -131,13 +132,12 @@ void Field::paintEvent(QPaintEvent * Event) {
 void Field::ifCoin() {
     if ( *(fieldAscii + fieldWidth*pm_y + pm_x) == 'o') {
         *(fieldAscii + fieldWidth*pm_y + pm_x) = '.';
-        coinCount++;
+        scoreCount++;
     }
     else if (*(fieldAscii + fieldWidth*pm_y + pm_x) == '0'){
 
-        emit testSignal();
         *(fieldAscii + fieldWidth*pm_y + pm_x) = '.';
-        this->bufferOn = true;
+        this->weaknessOn = true;
     }
 }
 
@@ -321,9 +321,6 @@ void Field::g_move () {
 
         g_y = y;
         g_x = x;
-
-
-        qDebug("%d %d", x, y);
 
 }
 
