@@ -36,6 +36,8 @@ void MainWindow::timerTick() {
 
     if (field->gamePaused) return;
 
+    if (field->coinCount > 150) onGameWin();
+
     time+=1;
     ui->time->setNum(time/10.0);
     update();
@@ -98,6 +100,13 @@ void MainWindow::endGame() {
 
 void MainWindow::quitGame() {
     this->~MainWindow();
+}
+
+void MainWindow::onGameWin() {
+    field->gameWon = true;
+    timer->stop();
+
+    update();
 }
 
 void MainWindow::pauseGame() {

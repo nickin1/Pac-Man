@@ -26,6 +26,7 @@ public slots:
     void pauseGame();
     void quitGame();
     void resetGame();
+    void onGameWin();
 
 
 private slots:

@@ -1,5 +1,1 @@
  - add more ghosts
- - winning mechanic 
- - Game resetting (field)
- - eat ghosts with powerUp
-

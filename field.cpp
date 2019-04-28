@@ -35,10 +35,12 @@ void Field::restart() {
     g_x = 10;
     g_y = 9;
     scoreCount = 0;
+    coinCount = 0;
     weaknessOn = false;
     powerUpTimer = 0;
     gameOver = false;
     gamePaused = false;
+    gameWon = false;
 }
 
 void Field::paintEvent(QPaintEvent * Event) {
@@ -80,17 +82,7 @@ void Field::paintEvent(QPaintEvent * Event) {
     }
 
 
-    if (gameOver) {
-       QFont font("Arial", 30);
-       painter.setFont(font);
-       //font.setPointSize(48);
 
-       QRectF rect{0, 0, double(fieldSize), double(fieldSize)};
-
-       painter.setPen(Qt::white);
-
-       painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, "Game Over");
-    }
 
     if (int(powerUpTimer*10) % 2 != 0){
         painter.fillRect(pm_x*42, pm_y*42, 42, 42, Qt::white);
@@ -103,6 +95,26 @@ void Field::paintEvent(QPaintEvent * Event) {
     painter.setBrush(ghost_color);
     painter.drawEllipse(g_x*42 + 6, g_y*42 + 6, 30, 30);
 
+    if (gameOver) {
+       QFont font("Arial", 48);
+       painter.setFont(font);
+
+       QRectF rect{0, 0, double(fieldSize), double(fieldSize)};
+
+       painter.setPen(Qt::white);
+
+       painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, "Game Over");
+    }
+    else if (gameWon) {
+        QFont font("Arial", 48);
+        painter.setFont(font);
+
+        QRectF rect{0, 0, double(fieldSize), double(fieldSize)};
+
+        painter.setPen(Qt::white);
+
+        painter.drawText(rect, Qt::AlignHCenter | Qt::AlignVCenter, "You Won!");
+    }
 
 }
 
@@ -111,6 +123,7 @@ void Field::ifCoin() {
     if ( fieldAscii[pm_y][pm_x] == 'o') {
         fieldAscii[pm_y][pm_x] = '.';
         scoreCount++;
+        coinCount ++;
     }
     else if (fieldAscii[pm_y][pm_x] == '0'){
 
